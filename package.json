@@ -1,0 +1,17 @@
+{
+  "name": "upsellboost-shopify-app",
+  "version": "2.1.0",
+  "description": "WhatsApp-first upsell engine for Indian Shopify merchants",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
