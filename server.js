@@ -261,14 +261,21 @@ app.get('/billing/create', async (req, res) => {
     `;
 
     const data = await shopifyGraphQL(shopDomain, mutation);
+    console.log('Billing GraphQL response:', JSON.stringify(data));
     const result = data?.data?.appSubscriptionCreate;
 
+    if (!data) {
+      return res.status(500).json({ error: 'Empty Shopify response' });
+    }
+
     if (result?.userErrors?.length > 0) {
-      return res.status(400).json({ error: result.userErrors[0].message });
+      console.error('Billing userErrors:', JSON.stringify(result.userErrors));
+      return res.status(400).json({ error: result.userErrors[0].message, details: result.userErrors });
     }
 
     if (!result?.confirmationUrl) {
-      return res.status(500).json({ error: 'No confirmation URL returned' });
+      console.error('Billing failed, no confirmationUrl:', JSON.stringify(result));
+      return res.status(500).json({ error: 'No confirmation URL returned', details: result });
     }
 
     console.log(`Billing created for ${shopDomain} plan=${plan}`);
@@ -276,7 +283,7 @@ app.get('/billing/create', async (req, res) => {
     res.redirect(result.confirmationUrl);
 
   } catch (e) {
-    console.error('Billing create error:', e.message);
+    console.error('Billing create error:', e.message, e);
     res.status(500).json({ error: e.message });
   }
 });
